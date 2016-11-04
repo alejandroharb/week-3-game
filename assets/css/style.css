@@ -1,0 +1,12 @@
+.letter-buttons ul{
+    display:table;
+    margin:0 auto;
+}
+
+.letter{
+    height: 50px;
+    width: 50px;
+    font-size: 30px;
+    margin: 30px;
+    background-color:white;
+}

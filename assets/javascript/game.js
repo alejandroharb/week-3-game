@@ -12,8 +12,6 @@
 //      b. else, add letter to a bank of letters chosen
 //          i. if word has already been chosen before, do not allow it to be chosen again.
 // toDo:
-// remove "game start" event listener
-// Add countdown of available Guesses (The hangman)
 // begin displaying game in DOM
 
 var wordBank = ["Argentina","Bolivia","Brazil","Chile","Colombia","Venezuela","Ecuador","Guyana","Peru","Paraguay","Suriname", "Uruguay","Venezuela", "Canada", "Cuba", "Guatemala", "Jamaica", "Mexico", "Panama", "Nicaragua", "Austria", "Belgium", "Bosnia", "Bulgaria", "Croatia", "Denmark", "France", "Georgia", "Germany", "Greece", "Hungary", "Italy", "Iceland", "Kazakhstan", "Netherlands", "Norway", "Poland", "Portugal", "Russia", "Spain", "Sweden", "Turkey", "Afghanistan", "Cambodia", "China", "India", "Japan", "Israel", "Iran", "Kazakhstan", "Lebanon", "Malaysia", "Pakistan", "Palestine", "Syria", "Thailand", "Vietnam" ,"Algeria", "Chad", "Egypt", "Ethiopia", "Kenya", "Liberia", "Lybia", "Madagascar", "Rwanda", "Nigeria", "Uganda", "Sudan", "Zimbabwe"]
@@ -27,11 +25,13 @@ var randomWordArr = randomWord.split("");
 //array to store the blank letters of the random word
 
 var noRepeat = true;
+userGuessArr=[];
 var usedLettersArr = [];
 var correctGuessArr = [];
 var guessCount = 7;
 var gameLose = false;
 var gameWin = false;
+var letterIndex = "";
 document.addEventListener('keyup', startGame);
 function startGame(event){
 		// to detect which key was pressed and store it in userGuess
@@ -52,59 +52,70 @@ function startGame(event){
 		console.log("Array of letter Blanks for Random Word: " + blankWordArr);
 		console.log("Word Blank as String: " + blankWordDisplay);
 
-
+		for(var i = 0; i <blankWordArr.length; i++){
+			var displayButton = $('<button>')
+			$('#display').append(displayButton);
+			displayButton.addClass('letter btn-lg');
+			displayButton.html(" _ ");
+			displayButton.attr('data-letter', randomWordArr[i]);
+		    // displayButton.data(randomWordArr);
+		}
 
 		document.addEventListener('keyup', function(event){
 			if ((event.keyCode <=90) && (event.keyCode >= 65)) { // to detect only numbers
 				var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
-				if(guessCount > 0){
-					guessCount--;
-				}
 				if (guessCount == 0) {
 					gameLose = true;
+					alert("Awe, you ran out of attempts, and it seems like you've been hung :-(")
 				}
-				usedLettersArr.push(userGuess);
-				console.log(guessCount);
+				usedLettersArr.unshift(userGuess);//unshift so that adds to front of array for more easily checking letter use repeat.
 				console.log("-------Letter REPEAT TEST------------");
-				var letterRepeat = function (usedLetterArr, letterChoice){
-					for(var i = 1; i < usedLetterArr.length - 1; i++){
-						if (letterChoice === usedLetterArr[i]){
-							noRepeat = false;
-						} else {
-							noRepeat = true;
-						}
-					} // **This for loop looks at only letters guessed in the past, by starting at array index 1 (so the first guess is not wrongly detected), and doesn't look at the last index, since every guess gets pushed to the back of the array.
-
-				};
-				letterRepeat(usedLettersArr, userGuess);
-				console.log("Repeat function Bolean: " + noRepeat)
-				console.log("-------FUNCTION TEST------------");
-				function checkLetter (computerArr,letterChoice,correctBankArr) {
-					for(var i = 0; i <computerArr.length; i++) {
-						if((letterChoice == computerArr[i]) && (noRepeat)) {
-							console.log("letter " + letterChoice + " found")
-							correctBankArr.push(letterChoice);
-						}
-					}
-				};
-				checkLetter(randomWordArr, userGuess, correctGuessArr);
-				console.log("Correct Guesses Array:" + correctGuessArr);
-				console.log("Used Letters Array:" + usedLettersArr);
-
-				console.log("Correct Guesses Array Sorted" + correctGuessArr.sort());
-				console.log("Computer Word Array Sorted" + randomWordArr.sort());
-
-				//Detect when user Wins
-				var compareArrays = function (computerArr,userArr){
-					if((userArr.sort().toString()) == (computerArr.sort().toString())){
-						alert("You've won!");
-						gameWin = true;
+				//****letter repeat****
+				for(var i = 1; i < usedLettersArr.length; i++){
+					if (userGuess == usedLettersArr[i]){
+						noRepeat = false;
+					} else {
+						noRepeat = true;
 					}
 				}
-				compareArrays(randomWordArr,correctGuessArr);
+				//*****Guess & Match Check****************
+				for(var i = 0; i <randomWordArr.length; i++) {
+					if((userGuess == randomWordArr[i]) && (noRepeat)) {
+						console.log("letter " + userGuess + " found")
+						correctGuessArr.push(userGuess);
+						displayButton.data("letter")
+						displayButton.data("letter",randomWordArr[i])
+					}
+				}
+				if(userGuess !== correctGuessArr[correctGuessArr.length-1]){
+					guessCount--;
+				}
+				console.log("**************************Guesses Left: "+ guessCount)
+				console.log("Correct Guesses Array: " + correctGuessArr);
+				console.log("Used Letters Array: " + usedLettersArr);
+				//---------Detect when user Wins----------------
+				if((correctGuessArr.sort().toString()) == (randomWordArr.sort().toString())){
+					alert("You've won!");
+					gameWin = true;
+				}
+				for(var i = 0; i <randomWordArr.length; i++) {
+					if((userGuess == randomWordArr[i]) && (noRepeat)) {
+						return  letterIndex = randomWordArr.indexOf(userGuess);
+					}
+				};
+				 // $('.letter-button').on('click', function() {
+		   //        var fridgeMagnet = $('<div>');
+		   //        fridgeMagnet.addClass('letter fridge-color');
+		   //        fridgeMagnet.text($(this).data("letter"));
+		   //        $('#display').append(fridgeMagnet);
+		       // });
 			}
+			// determining index of correctly guessed letter
+
 		});
 	}
 }
+//need to figure out how to get counter to count down only when letter guess wrong.
+//need to figure out how to add html when correct letter guessed, into correct button
 
 
