@@ -1,3 +1,9 @@
+body{
+    background-image:url('../images/world.jpeg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 .letter-buttons ul{
     display:table;
     margin:0 auto;
@@ -9,4 +15,21 @@
     font-size: 30px;
     margin: 30px;
     background-color:white;
+}
+.jumbotron{
+    background-color:rgba(238, 238, 238, 0.51);
+}
+#countdown {
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+}
+#used-letters {
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+.white {
+    color:white;
 }
