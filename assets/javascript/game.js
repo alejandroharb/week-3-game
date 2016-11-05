@@ -56,7 +56,7 @@ function startGame(event){
 			var displayButton = $('<button>')
 			$('#display').append(displayButton);
 			displayButton.addClass('letter btn-lg');
-			displayButton.html(" _ ");
+			displayButton.attr('id','blank')
 			displayButton.attr('data-letter', randomWordArr[i]);
 		    // displayButton.data(randomWordArr);
 		}
@@ -83,8 +83,15 @@ function startGame(event){
 					if((userGuess == randomWordArr[i]) && (noRepeat)) {
 						console.log("letter " + userGuess + " found")
 						correctGuessArr.push(userGuess);
-						displayButton.data("letter")
-						displayButton.data("letter",randomWordArr[i])
+						$('#display').append(displayButton);
+						displayButton.addClass('letter btn-lg');
+						displayButton.attr('id','letter')
+						$('#letter').html(userGuess)
+					} else {
+						$('#display').append(displayButton);
+						displayButton.addClass('letter btn-lg');
+						displayButton.attr('id','blank')
+						$('#blank').html(" _ ");
 					}
 				}
 				if(userGuess !== correctGuessArr[correctGuessArr.length-1]){
@@ -117,5 +124,4 @@ function startGame(event){
 }
 //need to figure out how to get counter to count down only when letter guess wrong.
 //need to figure out how to add html when correct letter guessed, into correct button
-
 
